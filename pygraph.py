@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 """ A simple function plotter based on matplotlib, tkinter and numpy 
-See Help for details on how to use different mathematic functions """
+See Help for details on how to use different mathematical functions """
 
 try:
     import tkinter as tk
