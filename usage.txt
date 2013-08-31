@@ -1,0 +1,22 @@
+Usage:
+
+Exponentialfunktion: e^(x) or e^x
+Sinus: sin(x)
+Cosinus: cos(x)
+Tangens: tan(x)
+Sinc: sinc(x)
+Arcsinus: arcsin(x)
+Arccosinus: arccos(x)
+Arctangens: arctan(x)
+Hyperbolic Sinus: sinh(x)
+Hyperbolic Cosinus: cosh(x)
+Hyperbolic Tangens: tanh(x)
+Hyperbolic Arcsinus: arcsinh(x)
+Hyperbolic Arccosinus: arccosh(x)
+Hyperbolic Arctangens: arctanh(x)
+Natural Logarithm: ln(x) or log(x)
+Logarithm Base 10: log10(x)
+Logarithm Base 2: log2(x)
+Factorial: fac(10)
+Squareroot: sqrt(x)
+PI: pi or PI
