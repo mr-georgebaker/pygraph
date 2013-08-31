@@ -8,9 +8,15 @@ Install:
 ========
 Python 2.7 has to be installed. Currently no Python 3 support, because some needed libraries aren't ported to Python 3 yet.
 
-- Download the zip file and unpack
-- Change to the new directory
-- chmod +x pygraph.py
+    1) git clone https://github.com/mr-georgebaker/pygraph.git
+    2) change to the new directory
+    3) chmod +x pygraphy.py
+
+OR
+
+    1) Download the complete repository as a .zip file and unpack
+    2) change to the new directory
+    3) chmod +x pygraph.py
 
 Needed libraries:
 =================
