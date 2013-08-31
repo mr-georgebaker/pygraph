@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-""" A simple function plotter based on matplotlib, tkinter and numpy 
-See Help for details on how to use different mathematical functions """
+""" A simple function plotter based on matplotlib, tkinter and numpy
+See "Help" -> "Usage" for details on how to use different mathematical functions """
 
 try:
     import tkinter as tk
@@ -144,8 +144,8 @@ class App:
         local_min = (np.diff(np.sign(np.diff(self.y))) > 0).nonzero()[0] + 1
         for i in self.x[local_min]:
             for j in self.y[local_min]:
-                plt.text(i, j, [np.round(i, decimals=3),
-                                np.round(j, decimals=3)])
+                plt.text(i, j, [float(np.round(i, decimals=3)),
+                                float(np.round(j, decimals=3))])
         plt.plot(self.x[local_min], self.y[local_min], "o")
         plt.gcf().canvas.draw()
 
@@ -154,8 +154,8 @@ class App:
         local_max = (np.diff(np.sign(np.diff(self.y))) < 0).nonzero()[0] + 1
         for i in self.x[local_max]:
             for j in self.y[local_max]:
-                plt.text(i, j, [np.round(i, decimals=3),
-                                np.round(j, decimals=3)])
+                plt.text(i, j, [float(np.round(i, decimals=3)),
+                                float(np.round(j, decimals=3))])
         plt.plot(self.x[local_max], self.y[local_max], "o")
         plt.gcf().canvas.draw()
 
@@ -166,11 +166,20 @@ class App:
                 average_y = (self.y[i] + self.y[i-1]) / 2
                 average_x = (self.x[i] + self.x[i-1]) / 2
                 plt.plot(average_x, average_y, "o")
+                plt.text(average_x, average_y, [float(np.round(average_x,
+                                                               decimals=3)),
+                                                float(np.round(average_y,
+                                                               decimals=3))])
                 plt.gcf().canvas.draw()
             if self.y[i] > 0 and self.y[i-1] < 0:
                 average_y = (self.y[i] + self.y[i-1]) / 2
                 average_x = (self.x[i] + self.x[i-1]) / 2
                 plt.plot(average_x, average_y, "o")
+                np.set_printoptions(precision=3)
+                plt.text(average_x, average_y, [float(np.round(average_x,
+                                                               decimals=3)),
+                                                float(np.round(average_y,
+                                                               decimals=3))])
                 plt.gcf().canvas.draw()
                 
 
