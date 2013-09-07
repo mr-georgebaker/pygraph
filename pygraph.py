@@ -10,6 +10,7 @@ except ImportError:
 from tkMessageBox import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from scipy.misc import factorial
+from idlelib import ToolTip
 import numpy as np
 import matplotlib.pyplot as plt
 import parser
@@ -40,12 +41,16 @@ REPLACE_DIC = {'sin' : 'np.sin',
                'sinc' : 'np.sinc'
                }
 
+
 class App:
 
     def __init__(self, master):
 
         self.master = master
         self.initUI()
+        self.x = 0
+        self.y = 0
+        self.legend = 0
 
     def initUI(self):
         self.master.title("Formula Plotter")
@@ -72,21 +77,28 @@ class App:
         replot_button = tk.Button(self.master, text='New plot',
                                   command=self.replot)
         replot_button.grid(row=0, column=2)
+        ToolTip.ToolTip(replot_button,
+                        'Clear current plot and draw new function')
         updateplot_button = tk.Button(self.master, text='Add to plot',
                                      command=self.update)
         updateplot_button.grid(row=0, column=3)
+        ToolTip.ToolTip(updateplot_button,
+                        'Draw new plot on existing')
 
         minima_button = tk.Button(self.master, text='Local Minima',
                                   command=self.minima)
         minima_button.grid(row=4, column=2)
+        ToolTip.ToolTip(minima_button, 'Show local Minima')
 
         maxima_button = tk.Button(self.master, text='Local Maxima',
                                   command=self.maxima)
         maxima_button.grid(row=5, column=2)
+        ToolTip.ToolTip(maxima_button, 'Show local Maxima')
         
         turning_button = tk.Button(self.master, text='Turning point',
                                    command=self.turning_point)
         turning_button.grid(row=6, column=2)
+        ToolTip.ToolTip(turning_point, 'Show turning points')
         
         tk.Label(self.master, text='f (x) =').grid(row=0, column=0)
         tk.Label(self.master, text='x minimum').grid(row=4, column=0)
@@ -102,9 +114,6 @@ class App:
         canvas.get_tk_widget().grid(row=3, column=1)
         toolbar.grid(row=6, column=1)
 
-        self.x = 0
-        self.y = 0
-        self.legend = 0
 
     def compute_formula(self, accuracy):
         self.x = np.arange(float(self.get_x_min()),
