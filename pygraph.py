@@ -53,6 +53,7 @@ class App:
         self.legend = 0
 
     def initUI(self):
+        """ Initialize the GUI-Elements """
         self.master.title("Formula Plotter")
 
         menu = tk.Menu(self.master)
@@ -98,7 +99,7 @@ class App:
         turning_button = tk.Button(self.master, text='Turning point',
                                    command=self.turning_point)
         turning_button.grid(row=6, column=2)
-        ToolTip.ToolTip(turning_point, 'Show turning points')
+        ToolTip.ToolTip(turning_button, 'Show turning points')
         
         tk.Label(self.master, text='f (x) =').grid(row=0, column=0)
         tk.Label(self.master, text='x minimum').grid(row=4, column=0)
@@ -116,6 +117,7 @@ class App:
 
 
     def compute_formula(self, accuracy):
+        """ Compute the formula, based on re, compile and eval """
         self.x = np.arange(float(self.get_x_min()),
                       float(self.get_x_max()), accuracy)
         x = self.x
@@ -123,7 +125,16 @@ class App:
         formula_raw_exp = formula_raw.replace('e^', 'exp')
         formula_list = re.split('(\W)', formula_raw_exp)
         formula_replace = [REPLACE_DIC.get(item,item) for item in formula_list]
-        formula_finish = ''.join(formula_replace)
+        formula_join = ''.join(formula_replace)
+        formula_list_number = re.split('\d', formula_join)
+        for i in xrange(1, len(formula_list_number)):
+            try:
+                if isinstance(float(formula_list_number[i]), float) and \
+                   formula_list_number[i+1] == 'x':
+                    formula_list_number.insert(i+1, '*')
+            except ValueError:
+                pass
+        formula_finish = ''.join(formula_list_number)
         form = parser.expr(formula_finish).compile()
         try:
             self.y = eval(form)
@@ -135,6 +146,7 @@ class App:
         return (self.x,self.y,self.legend)
 
     def replot(self):
+        """ Clear old plot and draw new one """
         self.compute_formula(0.01)
         plt.clf()
         plt.plot(self.x,self.y,label=self.legend)
@@ -143,12 +155,14 @@ class App:
         plt.gcf().canvas.draw()
 
     def update(self):
+        """ Add new plot to the old one(s) """
         self.compute_formula(0.01)
         plt.plot(self.x,self.y, label=self.legend)
         plt.legend()
         plt.gcf().canvas.draw()
 
     def minima(self):
+        """ Calculate the local minimas from the last function """
         self.compute_formula(0.01)
         local_min = (np.diff(np.sign(np.diff(self.y))) > 0).nonzero()[0] + 1
         for i in self.x[local_min]:
@@ -159,6 +173,7 @@ class App:
         plt.gcf().canvas.draw()
 
     def maxima(self):
+        """ Calculate the local maximas from the last function """
         self.compute_formula(0.01)
         local_max = (np.diff(np.sign(np.diff(self.y))) < 0).nonzero()[0] + 1
         for i in self.x[local_max]:
@@ -169,6 +184,7 @@ class App:
         plt.gcf().canvas.draw()
 
     def turning_point(self):
+        """ Calculate the turning points from the last function """
         self.compute_formula(0.00001)
         for i in xrange(1, len(self.y)):
             if self.y[i] < 0 and self.y[i-1] > 0:
@@ -190,23 +206,27 @@ class App:
                                                 float(np.round(average_y,
                                                                decimals=3))])
                 plt.gcf().canvas.draw()
-                
 
     def set_x_min(self, val):
+        """ Set x-min value with the slider """
         value = int(float(val))
         self.x_min.set(value)
 
     def get_x_min(self):
+        """ Return x-min value """
         return self.x_min.get()
 
     def set_x_max(self, val):
+        """ Set x-max value with the slider """
         value = int(float(val))
         self.x_max.set(value)
 
     def get_x_max(self):
+        """ Return x-max value """
         return self.x_max.get()
         
     def instructions(self):
+        """ Opens a info-window and shows the content of usage.txt """
         instruction = open('usage.txt').read()
         showinfo(title='Usage', message=instruction)
 
