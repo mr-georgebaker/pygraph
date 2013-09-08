@@ -33,6 +33,7 @@ For example:
 f(x) = sin(x)/2 <br>
 f(x) = arcsin(x^2)<br>
 f(x) = x^3+3*x^2+x<br>
+f(x) = 3x^2+x<br> 
 
 ![pygraph screenshot](http://i1222.photobucket.com/albums/dd496/georgebaker2/pygraph.png "Pygraph Screenshot")
 
