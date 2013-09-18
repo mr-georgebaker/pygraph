@@ -56,58 +56,67 @@ class App:
         """ Initialize the GUI-Elements """
         self.master.title("Formula Plotter")
 
-        menu = tk.Menu(self.master)
-        self.master.config(menu=menu)
-        helpmenu = tk.Menu(menu)
-        menu.add_cascade(label='Help', menu=helpmenu)
-        helpmenu.add_command(label='Usage', command=self.instructions)
+        self.menu = tk.Menu(self.master)
+        self.master.config(menu=self.menu)
+        self.helpmenu = tk.Menu(self.menu)
+        self.menu.add_cascade(label='Help', menu=self.helpmenu)
+        self.helpmenu.add_command(label='Usage', command=self.instructions)
 
-        scale_x_min = tk.Scale(self.master, from_=-500, to=0,
+        self.scale_x_min = tk.Scale(self.master, from_=-500, to=0,
                                tickinterval=100, length=600,
                                orient='horizontal', command=self.set_x_min)
-        scale_x_min.grid(row=4, column=1)
+        self.scale_x_min.grid(row=4, column=1)
         self.x_min = tk.IntVar()
 
-        scale_x_max = tk.Scale(self.master, from_=0, to=500,
+        self.scale_x_max = tk.Scale(self.master, from_=0, to=500,
                                tickinterval=100, length=600,
                                orient='horizontal', command=self.set_x_max)
-        scale_x_max.grid(row=5, column=1)
-        scale_x_max.set(10)
+        self.scale_x_max.grid(row=5, column=1)
+        self.scale_x_max.set(10)
         self.x_max = tk.IntVar()
 
-        replot_button = tk.Button(self.master, text='New plot',
+        self.replot_button = tk.Button(self.master, text='New plot',
                                   command=self.replot)
-        replot_button.grid(row=0, column=2)
-        ToolTip.ToolTip(replot_button,
+        self.replot_button.grid(row=0, column=2)
+        ToolTip.ToolTip(self.replot_button,
                         'Clear current plot and draw new function')
-        updateplot_button = tk.Button(self.master, text='Add to plot',
+        self.updateplot_button = tk.Button(self.master, text='Add to plot',
                                      command=self.update)
-        updateplot_button.grid(row=0, column=3)
-        ToolTip.ToolTip(updateplot_button,
+        self.updateplot_button.grid(row=0, column=3)
+        ToolTip.ToolTip(self.updateplot_button,
                         'Draw new plot on existing')
 
-        minima_button = tk.Button(self.master, text='Local Minima',
+        self.minima_button = tk.Button(self.master, text='Local Minima',
                                   command=self.minima)
-        minima_button.grid(row=4, column=2)
-        ToolTip.ToolTip(minima_button, 'Show local Minima')
+        self.minima_button.grid(row=4, column=2)
+        ToolTip.ToolTip(self.minima_button, 'Show local Minima')
 
-        maxima_button = tk.Button(self.master, text='Local Maxima',
+        self.maxima_button = tk.Button(self.master, text='Local Maxima',
                                   command=self.maxima)
-        maxima_button.grid(row=5, column=2)
-        ToolTip.ToolTip(maxima_button, 'Show local Maxima')
+        self.maxima_button.grid(row=5, column=2)
+        ToolTip.ToolTip(self.maxima_button, 'Show local Maxima')
         
-        turning_button = tk.Button(self.master, text='Turning point',
+        self.turning_button = tk.Button(self.master, text='Turning point',
                                    command=self.turning_point)
-        turning_button.grid(row=6, column=2)
-        ToolTip.ToolTip(turning_button, 'Show turning points')
+        self.turning_button.grid(row=6, column=2)
+        ToolTip.ToolTip(self.turning_button, 'Show turning points')
+
+        self.tangent_button = tk.Button(self.master, text='Tangent',
+                                        command=self.tangent)
+        self.tangent_button.grid(row=6, column=3)
+        ToolTip.ToolTip(self.tangent_button, 'Show tangent at entered value')
         
         tk.Label(self.master, text='f (x) =').grid(row=0, column=0)
         tk.Label(self.master, text='x minimum').grid(row=4, column=0)
         tk.Label(self.master, text='x maximum').grid(row=5, column=0)
+        tk.Label(self.master, text='Enter tangent value').grid(row=4, column=3)
 
         self.formula = tk.Entry(self.master, width=80)
         self.formula.grid(row=0, column=1)
         self.formula.insert(0, 'sin(x)')
+        self.tangent_val = tk.Entry(self.master, width=10)
+        self.tangent_val.grid(row=5, column=3)
+        self.tangent_val.insert(0, 0)
 
         fig = plt.figure()
         canvas = FigureCanvasTkAgg(fig, master=self.master)
@@ -116,10 +125,10 @@ class App:
         toolbar.grid(row=6, column=1)
 
 
-    def compute_formula(self, accuracy):
+    def compute_formula(self, accuracy, x_min, x_max):
         """ Compute the formula, based on re, compile and eval """
-        self.x = np.arange(float(self.get_x_min()),
-                      float(self.get_x_max()), accuracy)
+        self.x = np.arange(float(x_min),
+                      float(x_max), accuracy)
         x = self.x
         formula_raw = self.formula.get().replace('e^x', 'exp(x)')
         formula_raw_exp = formula_raw.replace('e^', 'exp')
@@ -147,7 +156,7 @@ class App:
 
     def replot(self):
         """ Clear old plot and draw new one """
-        self.compute_formula(0.01)
+        self.compute_formula(0.01,self.get_x_min(),self.get_x_max())
         plt.clf()
         plt.plot(self.x,self.y,label=self.legend)
         plt.grid('on')
@@ -156,14 +165,14 @@ class App:
 
     def update(self):
         """ Add new plot to the old one(s) """
-        self.compute_formula(0.01)
+        self.compute_formula(0.01,self.get_x_min(),self.get_x_max())
         plt.plot(self.x,self.y, label=self.legend)
         plt.legend()
         plt.gcf().canvas.draw()
 
     def minima(self):
         """ Calculate the local minimas from the last function """
-        self.compute_formula(0.01)
+        self.compute_formula(0.01,self.get_x_min(),self.get_x_max())
         local_min = (np.diff(np.sign(np.diff(self.y))) > 0).nonzero()[0] + 1
         for i in self.x[local_min]:
             for j in self.y[local_min]:
@@ -174,7 +183,7 @@ class App:
 
     def maxima(self):
         """ Calculate the local maximas from the last function """
-        self.compute_formula(0.01)
+        self.compute_formula(0.01,self.get_x_min(),self.get_x_max())
         local_max = (np.diff(np.sign(np.diff(self.y))) < 0).nonzero()[0] + 1
         for i in self.x[local_max]:
             for j in self.y[local_max]:
@@ -185,7 +194,7 @@ class App:
 
     def turning_point(self):
         """ Calculate the turning points from the last function """
-        self.compute_formula(0.00001)
+        self.compute_formula(0.0001,self.get_x_min(),self.get_x_max())
         for i in xrange(1, len(self.y)):
             if self.y[i] < 0 and self.y[i-1] > 0:
                 average_y = (self.y[i] + self.y[i-1]) / 2
@@ -206,6 +215,13 @@ class App:
                                                 float(np.round(average_y,
                                                                decimals=3))])
                 plt.gcf().canvas.draw()
+
+    def tangent(self):
+        """ Plots the tangent of the last function at an entered point"""
+        self.compute_formula(0.00005,float(self.tangent_val.get())-0.0001,
+                             float(self.tangent_val.get())+0.0001)
+        plt.plot(self.x,self.y,'o')
+        plt.gcf().canvas.draw()
 
     def set_x_min(self, val):
         """ Set x-min value with the slider """
