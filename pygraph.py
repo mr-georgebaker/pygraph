@@ -225,7 +225,6 @@ class App:
         plt.text(self.x, self.y, [float(np.round(self.x, decimals=3)),
                                   float(np.round(self.y, decimals=3))])
         plt.gcf().canvas.draw()
-        print self.x,self.y
 
     def set_x_min(self, val):
         """ Set x-min value with the slider """
