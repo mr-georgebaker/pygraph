@@ -156,14 +156,16 @@ class App:
         plt.clf()
         plt.plot(self.x,self.y,label=self.legend)
         plt.grid('on')
-        plt.legend()
+        legend = plt.legend()
+        legend.draggable(state=True)
         plt.gcf().canvas.draw()
 
     def update(self):
         """ Add new plot to the old one(s) """
         self.compute_formula(0.01,self.get_x_min(),self.get_x_max())
         plt.plot(self.x,self.y, label=self.legend)
-        plt.legend()
+        legend = plt.legend()
+        legend.draggable(state=True)
         plt.gcf().canvas.draw()
 
     def minima(self):
