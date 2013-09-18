@@ -199,7 +199,7 @@ class App:
             if self.y[i] < 0 and self.y[i-1] > 0:
                 average_y = (self.y[i] + self.y[i-1]) / 2
                 average_x = (self.x[i] + self.x[i-1]) / 2
-                plt.plot(average_x, average_y, "o")
+                plt.plot(average_x,average_y,'o')
                 plt.text(average_x, average_y, [float(np.round(average_x,
                                                                decimals=3)),
                                                 float(np.round(average_y,
@@ -208,7 +208,7 @@ class App:
             if self.y[i] > 0 and self.y[i-1] < 0:
                 average_y = (self.y[i] + self.y[i-1]) / 2
                 average_x = (self.x[i] + self.x[i-1]) / 2
-                plt.plot(average_x, average_y, "o")
+                plt.plot(average_x, average_y, 'o')
                 np.set_printoptions(precision=3)
                 plt.text(average_x, average_y, [float(np.round(average_x,
                                                                decimals=3)),
@@ -218,10 +218,14 @@ class App:
 
     def tangent(self):
         """ Plots the tangent of the last function at an entered point"""
-        self.compute_formula(0.00005,float(self.tangent_val.get())-0.0001,
+        self.compute_formula(0.0005,float(self.tangent_val.get())-0.0001,
                              float(self.tangent_val.get())+0.0001)
         plt.plot(self.x,self.y,'o')
+        np.set_printoptions(precision=3)
+        plt.text(self.x, self.y, [float(np.round(self.x, decimals=3)),
+                                  float(np.round(self.y, decimals=3))])
         plt.gcf().canvas.draw()
+        print self.x,self.y
 
     def set_x_min(self, val):
         """ Set x-min value with the slider """
