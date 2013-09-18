@@ -220,11 +220,8 @@ class App:
         np.set_printoptions(precision=3)
         plt.text(self.x, self.y, [float(np.round(self.x, decimals=3)),
                                   float(np.round(self.y, decimals=3))])
-        #plt.gcf().canvas.draw()
         self.differentiate(self.tangent_val.get())
-        #angle = np.arctan(float(self.slope))
         plt.plot([self.x+1,self.x-1],[self.y+self.slope,self.y-self.slope])
-        #plt.plot([1,2],[1,2])
         plt.gcf().canvas.draw()
         
         
