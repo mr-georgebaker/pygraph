@@ -10,9 +10,11 @@ except ImportError:
 from tkMessageBox import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from scipy.misc import factorial
+from sympy.parsing.sympy_parser import parse_expr
 from idlelib import ToolTip
 import numpy as np
 import matplotlib.pyplot as plt
+import sympy as sp
 import parser
 import re
 
@@ -51,6 +53,8 @@ class App:
         self.x = 0
         self.y = 0
         self.legend = 0
+        self.formula_finish = 0
+        self.slope = 0
 
     def initUI(self):
         """ Initialize the GUI-Elements """
@@ -134,17 +138,9 @@ class App:
         formula_raw_exp = formula_raw.replace('e^', 'exp')
         formula_list = re.split('(\W)', formula_raw_exp)
         formula_replace = [REPLACE_DIC.get(item,item) for item in formula_list]
-        formula_join = ''.join(formula_replace)
-        formula_list_number = re.split('\d', formula_join)
-        for i in xrange(1, len(formula_list_number)):
-            try:
-                if isinstance(float(formula_list_number[i]), float) and \
-                   formula_list_number[i+1] == 'x':
-                    formula_list_number.insert(i+1, '*')
-            except ValueError:
-                pass
-        formula_finish = ''.join(formula_list_number)
-        form = parser.expr(formula_finish).compile()
+        self.formula_finish = ''.join(formula_replace)
+        form = parser.expr(self.formula_finish).compile()
+        
         try:
             self.y = eval(form)
             self.legend = self.formula.get()
@@ -224,8 +220,23 @@ class App:
         np.set_printoptions(precision=3)
         plt.text(self.x, self.y, [float(np.round(self.x, decimals=3)),
                                   float(np.round(self.y, decimals=3))])
+        #plt.gcf().canvas.draw()
+        self.differentiate(self.tangent_val.get())
+        #angle = np.arctan(float(self.slope))
+        plt.plot([self.x+1,self.x-1],[self.y+self.slope,self.y-self.slope])
+        #plt.plot([1,2],[1,2])
         plt.gcf().canvas.draw()
-
+        
+        
+    def differentiate(self, val):
+        """ Calculates the differential for plotting the tangent """
+        x = sp.Symbol('x')
+        formula = self.formula_finish
+        form = self.formula_finish.replace('np.', '')
+        sympy_exp = parse_expr(form)
+        df = sympy_exp.diff(x)
+        self.slope = df.evalf(subs={x:val})   
+        
     def set_x_min(self, val):
         """ Set x-min value with the slider """
         value = int(float(val))
